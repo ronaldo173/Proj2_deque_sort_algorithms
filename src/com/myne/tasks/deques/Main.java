@@ -1,6 +1,8 @@
 package com.myne.tasks.deques;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -20,9 +22,6 @@ public class Main {
 		/**
 		 * Программа должна динамически загрузить класс с нужной реализацией,
 		 * создать дек из целых чисел, заполнить его несколькими случайными
-		 * элементами, вычмслить сумму элементов дека, используя итератор, а
-		 * затем проверить, есть ли в загруженной реализации дополнительный
-		 * реализованный метод size
 		 */
 		Deque<Integer> deque = null;
 		int maxDeq = 0;
@@ -31,22 +30,41 @@ public class Main {
 			maxDeq = Integer.parseInt(args[1]);
 			Constructor<ArrayDeque> constructor = clasArrDeq.getConstructor(Integer.class);
 			deque = constructor.newInstance(new Object[] { maxDeq });
+		} else {
+			deque = new ListDeque<>();
 		}
-		else{
-			deque  = new ListDeque<>();
-		}
-		
-		//заполнить его несколькими случайными элементами
+
+		// заполнить его несколькими случайными элементами
+		System.out.println(deque);
+
 		for (int i = 0; i < n; i++) {
-			int random = (int) (Math.random() * 101); //ot 0 do 100
+			int random = (int) (Math.random() * 101); // ot 0 do 100
 			deque.addLast(random);
 		}
-		
+
 		System.out.println("\n");
+		int sum = 0;
 		for (Integer integer : deque) {
 			System.out.print(integer + " ");
+			sum += integer;
 		}
-		
+		System.out.println("\nSum is: " + sum);
+
+		/**
+		 * проверить, есть ли в загруженной реализации дополнительный
+		 * реализованный метод size (вычисляющий число элементов в очереди).
+		 * Если такой метод есть, то программа должна его вызвать и вывести
+		 * общее число добавленных элементов; если нет - сообщить об отсутствии
+		 * метода в реализации.
+		 */
+
+		try {
+			Method method = deque.getClass().getMethod("size");
+			Object size = method.invoke(deque);
+			System.out.println("Size is: " + size);
+		} catch (Exception e) {
+			System.out.println("отсутствии метода в реализации.");
+		}
 
 	}
 
